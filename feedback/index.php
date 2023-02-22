@@ -15,7 +15,7 @@ if (isset($_POST["submit"])) {
     $name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   };
   // Check for email
-  if (empty($_POST["name"])) {
+  if (empty($_POST["email"])) {
     $emailErr = "Email is required";
   } else {
     $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
@@ -24,12 +24,22 @@ if (isset($_POST["submit"])) {
   if (empty($_POST["body"])) {
     $bodyErr = "Feedback is required";
   } else {
-    $body = filter_input(INPUT_POST, "name", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $body = filter_input(INPUT_POST, "body", FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+  }
+
+
+  // Check for errors before submiting to database
+  if ($nameErr == "" && $emailErr == "" && $bodyErr == "") {
+
+    $sql = "INSERT INTO feedback (name, email, body) VALUES ('$name', '$email', '$body')";
+    if (mysqli_query($conn, $sql)) {
+      // Redirect to index page
+      header("Location: feedback.php");
+    } else {
+      echo "ERROR: " . mysqli_error($conn);
+    }
   }
 }
-
-echo $nameErr;
-echo $name;
 ?>
 
 
